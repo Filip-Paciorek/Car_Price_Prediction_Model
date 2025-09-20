@@ -46,4 +46,4 @@ def base_model_data(dataset):
 
     #data_clean.drop(columns=['Equipment','Origin',]
 base_model_data = base_model_data(base_data)
-base_model_data.to_csv('../data/processed/base_model_data.csv')
+base_model_data.to_csv('../data/processed/base_model_data.csv',index=False)
