@@ -11,7 +11,7 @@ def clean(dataset):
     return data
 base_data = clean(data_raw)
 
-def base_model(dataset):
+def base_model_data(dataset):
     data_clean = dataset.dropna()
     #print(data_clean.shape)
     #print(data_clean.head())
@@ -41,8 +41,9 @@ def base_model(dataset):
     rare_brands = appearances[min_appearences > appearances].index
     data_clean['Brand'] = data_clean['Brand'].replace(rare_brands,'Other')
     data_clean = pd.get_dummies(data_clean,columns=['Brand'])
-    data_clean.drop(columns=['Sector','Location','Equipment'],inplace=True)
-    #print(data_clean.columns)
+    data_clean.drop(columns=['Model','Sector','Location','Equipment'],inplace=True)
+    return data_clean
 
     #data_clean.drop(columns=['Equipment','Origin',]
-base_model(base_data)
+base_model_data = base_model_data(base_data)
+base_model_data.to_csv('../data/processed/base_model_data.csv')
