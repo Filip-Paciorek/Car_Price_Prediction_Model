@@ -21,13 +21,19 @@ def base_model_data(dataset):
     data_clean = data_clean[data_clean['Price'] <= 1000000]
     #data_clean = data_clean[~((data_clean['Price'] > 1000000) & (data_clean['Year'].astype(int) <2010))].sort_values('Year')
     #print(data_clean)
+    data_clean['Price'] = data_clean['Price']/1000
+    print(data_clean['Price'].head())
     data_clean['Fiscal Power'] = data_clean['Fiscal Power'].str.replace('CV','')
+    data_clean['Fiscal Power'] = data_clean['Fiscal Power'].apply(lambda x: int(x) if x.isdigit() else int("".join(re.findall('\d+',x))))
+    #print(data_clean['Fiscal Power'].unique())
     #print(data_clean['Fiscal Power'])
     #data_clean = data_clean.drop(data_clean[data_clean['Price'] > 1000000])
     data_clean['Mileage'] = data_clean['Mileage'].str.replace(' ','').str.split('-')
     #print(data_clean['Mileage'].head())
-    data_clean['Mileage'] = data_clean['Mileage'].apply(lambda x: np.mean([int(i) if i.isdigit() else int("".join(re.findall('\d+', i))) for i in x]))
-    #print(data_clean['Mileage'].head())
+    data_clean['Mileage'] = data_clean['Mileage'].apply(lambda x: np.log(np.mean([int(i) if i.isdigit() else int("".join(re.findall('\d+', i))) for i in x])+1))
+    #data_clean['Mileage'] = data_clean['Mileage'].apply(lambda x: int(x))
+    
+    print(data_clean['Mileage'].head())
     print(data_clean['Condition'].unique())
     condition = {'New':7,'Excellent':6,'Very Good':5,'Good':4,'Fair':3,'Damaged':2,'For Parts':1}
     data_clean['Condition'] = data_clean['Condition'].map(lambda x: condition[x])
