@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
 data_raw = pd.read_csv('../data/processed/base_model_data.csv')
 def bools(data):
     for column in data:
@@ -27,7 +28,7 @@ def train_test_split(X,y,size,state):
     y_train = y.iloc[train_indx]
     y_test = y.iloc[test_indx]
     return X_train,X_test,y_train,y_test
-X_train,X_test,y_train,y_test = train_test_split(X,y,0.2,11)
+X_train,X_test,y_train,y_test = train_test_split(X,y,0.2,198)
 
 def predict(X,m,b):
     return np.dot(X,m)+b
@@ -47,12 +48,12 @@ def compute_loss(X,y,m,b):
     y_pred = predict(X,m,b)
     error = y_pred - y
     dm = (np.dot(np.transpose(X),error) * 2)/len(y)
-    db = (error * 2)/len(y)
-    return dm,db
+    db = (error * 2)
+    return dm,np.mean(db)
 def gradient_descent(X,y,batch):
     X = np.array(X,dtype='float')
     y = np.array(y,dtype='float')
-    a = 0.0000008
+    a = 0.002
     #print(X.shape)
     #print(y.shape)
     m = np.zeros(len((X[0])))
@@ -70,7 +71,36 @@ def gradient_descent(X,y,batch):
         b = b - a*db
         if i % 10 == 0:
             print(f'MSE: {MSE(curr_y,y_pred)}')# dm,db: {dm,db}')
+    return m,b
+def test_model(X,y,m,b):
+    X = np.array(X,dtype='float')
+    y = np.array(y,dtype='float')
+    print(X.shape)
+    print(m.shape)
+    print(b.shape)
+    predictions = predict(X,m,b)
+    print(MSE(y,predictions))
+    plt.figure()
+    y,predictions = np.exp(y),np.exp(predictions)
+    y = y.astype(int)
     
-gradient_descent(X_train,y_train,256)
+    print(np.isnan(predictions).any())   # True if any NaNs exist
+    print(np.isinf(predictions).any())   # True if any +/- inf exist
+    y_pred = predictions.astype(int)
+    indx = []
+    for i in range(len(y)):
+        indx.append(i)
+    plt.hexbin(y,y_pred,gridsize=32)
+    plt.show()
+    return y_pred,y
+m,b = gradient_descent(X_train,y_train,256)
 
+y_pred,y = test_model(X_test[:100],y_test[:100],m,b)
+s = 0
+s2 = 0
+for i in range(len(y_pred)):
+    s += abs(y_pred[i] - y[i])
+    s2 += y[i]
+    #print(y[i],y_pred[i], y_pred[i] - y[i])
+print(s2,s)
 
