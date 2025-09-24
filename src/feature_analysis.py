@@ -10,6 +10,6 @@ def mean_corr(x,y):
     plt.figure()
     plt.scatter(x,y)
     plt.show()
-mean_corr(data_clean['CtY'],data_clean['Price'])
+mean_corr(data_clean['Number of Doors'],data_clean['Price'])
 
 
