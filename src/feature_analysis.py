@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-
 data_clean = pd.read_csv('../data/processed/base_model_data.csv')
 print(data_clean.head())
+columns = data_clean.columns
 def mean_corr(x,y):
     y = np.exp(y)
     l = np.arange(len(x))
@@ -11,5 +11,5 @@ def mean_corr(x,y):
     plt.scatter(x,y)
     plt.show()
 mean_corr(data_clean['Number of Doors'],data_clean['Price'])
-
+mean_corr(data_clean['Year'],data_clean['Price'])
 
